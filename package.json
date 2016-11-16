@@ -1,8 +1,8 @@
 {
   "name": "chartjs-plugin-draggable",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Draggable element plugin for Chart.js",
-  "main": "src/index.js",
+  "main": "dist/chartjs-plugin-draggable.js",
   "scripts": {
     "compile": "webpack"
   },
