@@ -1,7 +1,7 @@
 /*!
  * chartjs-plugin-draggable.js
  * http://chartjs.org/
- * Version: 0.1.0
+ * Version: 0.1.2
  * 
  * Copyright 2016 Jonathon Hill
  * Released under the MIT license
@@ -100,6 +100,39 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+	function getFilter(chartInstance, accessors) {
+		return function () {
+			chartInstance.draggable.draggables = accessors
+			// All draggable elements that are enabled
+			.map(function (accessor) {
+				return accessor.getElements(chartInstance);
+			})
+			// Flatten array of arrays
+			.reduce(function (list, innerList) {
+				return list.concat(innerList);
+			}, [])
+			// Find the elements whose box the click started in
+			.filter(function (draggable) {
+				return draggable.isInBox(_d3Selection.event, 10);
+			});
+
+			return chartInstance.draggable.draggables.length > 0;
+		};
+	}
+
+	function getSubjectPicker(chartInstance) {
+		// @TODO: select the nearest element to drag
+		return function () {
+			return chartInstance.draggable.draggables[0];
+		};
+	}
+
+	function getDispatcher(subjectPicker, type) {
+		return function () {
+			return subjectPicker().dispatch(type, _d3Selection.event);
+		};
+	}
+
 	var ChartjsDraggablePlugin = exports.ChartjsDraggablePlugin = function () {
 		function ChartjsDraggablePlugin(accessors) {
 			_classCallCheck(this, ChartjsDraggablePlugin);
@@ -107,44 +140,16 @@
 			this.accessors = accessors.filter(function (accessor) {
 				return accessor.isSupported();
 			});
-			this.subject = null;
 		}
 
 		_createClass(ChartjsDraggablePlugin, [{
 			key: 'afterInit',
 			value: function afterInit(chartInstance) {
-				var _this = this;
+				chartInstance.draggable = {};
 
-				(0, _d3Selection.select)(chartInstance.chart.canvas).call((0, _d3Drag.drag)().container(chartInstance.chart.canvas).filter(function () {
-					_this.subject = _this.accessors
-					// All draggable elements that are enabled
-					.map(function (accessor) {
-						return accessor.getElements(chartInstance);
-					})
-					// Flatten array of arrays
-					.reduce(function (list, innerList) {
-						return list.concat(innerList);
-					}, [])
-					// Select the first element whose box the click started in
-					// @TODO: select the nearest element to drag
-					.filter(function (draggable) {
-						return draggable.isInBox(_d3Selection.event, 10);
-					})[0];
+				var subjectPicker = getSubjectPicker(chartInstance);
 
-					// Only proceed if the drag gesture started on a draggable element
-					return !!_this.subject;
-				}).subject(function () {
-					return _this.subject;
-				}).on('start', this._getDispatcher('onDragStart')).on('drag', this._getDispatcher('onDrag')).on('end', this._getDispatcher('onDragEnd')));
-			}
-		}, {
-			key: '_getDispatcher',
-			value: function _getDispatcher(type) {
-				var _this2 = this;
-
-				return function () {
-					_this2.subject.dispatch(type, _d3Selection.event);
-				}.bind(this);
+				(0, _d3Selection.select)(chartInstance.chart.canvas).call((0, _d3Drag.drag)().container(chartInstance.chart.canvas).filter(getFilter(chartInstance, this.accessors)).subject(subjectPicker).on('start', getDispatcher(subjectPicker, 'onDragStart')).on('drag', getDispatcher(subjectPicker, 'onDrag')).on('end', getDispatcher(subjectPicker, 'onDragEnd')));
 			}
 		}]);
 
@@ -1551,11 +1556,11 @@
 					return elementClass;
 				};
 
-				return elements.filter(function (element, i) {
-					return !!configs[i].draggable;
-				}).map(function (element, i) {
+				return elements.map(function (element, i) {
 					var className = elementClassFn(configs[i]);
 					return new className(chartInstance, element, configs[i]);
+				}).filter(function (element, i) {
+					return !!configs[i].draggable;
 				});
 			}
 		}]);

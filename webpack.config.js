@@ -4,7 +4,7 @@ var path = require('path');
 
 var banner = "chartjs-plugin-draggable.js\n" +
              "http://chartjs.org/\n" +
-             "Version: 0.1.1\n\n" +
+             "Version: 0.1.2\n\n" +
              "Copyright 2016 Jonathon Hill\n" +
              "Released under the MIT license\n" +
              "https://github.com/compwright/chartjs-plugin-draggable/blob/master/LICENSE.md";
