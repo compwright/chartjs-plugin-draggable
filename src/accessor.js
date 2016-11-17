@@ -11,10 +11,10 @@ export class DraggableElementAccessor {
 			: () => elementClass;
 
 		return elements
-			.filter((element, i) => !!configs[i].draggable)
 			.map((element, i) => {
 				let className = elementClassFn(configs[i]);
 				return new className(chartInstance, element, configs[i]);
-			});
+			})
+			.filter((element, i) => !!configs[i].draggable);
 	}
 }
