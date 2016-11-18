@@ -1,7 +1,7 @@
 /*!
  * chartjs-plugin-draggable.js
  * http://chartjs.org/
- * Version: 0.1.2
+ * Version: 0.1.3
  * 
  * Copyright 2016 Jonathon Hill
  * Released under the MIT license
@@ -1465,7 +1465,7 @@
 
 	var _accessor = __webpack_require__(7);
 
-	var _lineElement = __webpack_require__(8);
+	var _lineElement = __webpack_require__(9);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1514,8 +1514,7 @@
 						case 'line':
 							return _lineElement.DraggableLineAnnotationElement;
 
-						default:
-							throw 'Unsupported annotation type: ' + config.type;
+						// @TODO: implement 'box' support, DraggableBoxAnnotationElement class
 					}
 				});
 			}
@@ -1527,15 +1526,18 @@
 
 /***/ },
 /* 7 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+	exports.DraggableElementAccessor = undefined;
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _element = __webpack_require__(8);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1557,7 +1559,7 @@
 				};
 
 				return elements.map(function (element, i) {
-					var className = elementClassFn(configs[i]);
+					var className = elementClassFn(configs[i]) || _element.DraggableElement;
 					return new className(chartInstance, element, configs[i]);
 				}).filter(function (element, i) {
 					return !!configs[i].draggable;
@@ -1570,79 +1572,6 @@
 
 /***/ },
 /* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	exports.DraggableLineAnnotationElement = undefined;
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _element = __webpack_require__(9);
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var DraggableLineAnnotationElement = exports.DraggableLineAnnotationElement = function (_DraggableElement) {
-		_inherits(DraggableLineAnnotationElement, _DraggableElement);
-
-		function DraggableLineAnnotationElement(chartInstance, elementInstance, elementConfig) {
-			_classCallCheck(this, DraggableLineAnnotationElement);
-
-			var _this = _possibleConstructorReturn(this, (DraggableLineAnnotationElement.__proto__ || Object.getPrototypeOf(DraggableLineAnnotationElement)).call(this, chartInstance, elementInstance, elementConfig));
-
-			_this.scale = _this.chart.scales[elementConfig.scaleID];
-			return _this;
-		}
-
-		_createClass(DraggableLineAnnotationElement, [{
-			key: '_getPixel',
-			value: function _getPixel(event) {
-				return this.scale.isHorizontal() ? event.x : event.y;
-			}
-		}, {
-			key: '_getValue',
-			value: function _getValue(event) {
-				var offset = this.offset || 0;
-				return this.scale.getValueForPixel(this._getPixel(event) - offset);
-			}
-		}, {
-			key: 'getBox',
-			value: function getBox(tolerance) {
-				return {
-					x: [this.element._view.x1 - tolerance, this.element._view.x2 + tolerance],
-					y: [this.element._view.y1 - tolerance, this.element._view.y2 + tolerance]
-				};
-			}
-		}, {
-			key: 'onDragStart',
-			value: function onDragStart(event) {
-				this.offset = this._getPixel(event) - this.scale.getPixelForValue(this.config.value);
-			}
-		}, {
-			key: 'onDrag',
-			value: function onDrag(event) {
-				this.config.value = this._constrainValue(this.scale, this._getValue(event));
-				this.chart.update(0);
-			}
-		}, {
-			key: 'onDragEnd',
-			value: function onDragEnd(event) {
-				this.offset = undefined;
-			}
-		}]);
-
-		return DraggableLineAnnotationElement;
-	}(_element.DraggableElement);
-
-/***/ },
-/* 9 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1741,6 +1670,79 @@
 
 		return DraggableElement;
 	}();
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.DraggableLineAnnotationElement = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _element = __webpack_require__(8);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DraggableLineAnnotationElement = exports.DraggableLineAnnotationElement = function (_DraggableElement) {
+		_inherits(DraggableLineAnnotationElement, _DraggableElement);
+
+		function DraggableLineAnnotationElement(chartInstance, elementInstance, elementConfig) {
+			_classCallCheck(this, DraggableLineAnnotationElement);
+
+			var _this = _possibleConstructorReturn(this, (DraggableLineAnnotationElement.__proto__ || Object.getPrototypeOf(DraggableLineAnnotationElement)).call(this, chartInstance, elementInstance, elementConfig));
+
+			_this.scale = _this.chart.scales[elementConfig.scaleID];
+			return _this;
+		}
+
+		_createClass(DraggableLineAnnotationElement, [{
+			key: '_getPixel',
+			value: function _getPixel(event) {
+				return this.scale.isHorizontal() ? event.x : event.y;
+			}
+		}, {
+			key: '_getValue',
+			value: function _getValue(event) {
+				var offset = this.offset || 0;
+				return this.scale.getValueForPixel(this._getPixel(event) - offset);
+			}
+		}, {
+			key: 'getBox',
+			value: function getBox(tolerance) {
+				return {
+					x: [this.element._view.x1 - tolerance, this.element._view.x2 + tolerance],
+					y: [this.element._view.y1 - tolerance, this.element._view.y2 + tolerance]
+				};
+			}
+		}, {
+			key: 'onDragStart',
+			value: function onDragStart(event) {
+				this.offset = this._getPixel(event) - this.scale.getPixelForValue(this.config.value);
+			}
+		}, {
+			key: 'onDrag',
+			value: function onDrag(event) {
+				this.config.value = this._constrainValue(this.scale, this._getValue(event));
+				this.chart.update(0);
+			}
+		}, {
+			key: 'onDragEnd',
+			value: function onDragEnd(event) {
+				this.offset = undefined;
+			}
+		}]);
+
+		return DraggableLineAnnotationElement;
+	}(_element.DraggableElement);
 
 /***/ }
 /******/ ]);
