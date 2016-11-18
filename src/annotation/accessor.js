@@ -37,8 +37,7 @@ export class DraggableAnnotationAccessor extends DraggableElementAccessor {
 					case 'line':
 						return DraggableLineAnnotationElement;
 
-					default:
-						throw `Unsupported annotation type: ${config.type}`;
+					// @TODO: implement 'box' support, DraggableBoxAnnotationElement class
 				}
 			}
 		);

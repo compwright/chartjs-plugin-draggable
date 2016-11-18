@@ -5,7 +5,7 @@
     <title>Scatter Chart</title>
     <script src="../node_modules/chart.js/dist/Chart.bundle.js"></script>
     <script src="../node_modules/chartjs-plugin-annotation/chartjs-plugin-annotation.min.js"></script>
-    <script src="../dist/chartjs-plugin-draggable.min.js"></script>
+    <script src="../dist/chartjs-plugin-draggable.js"></script>
     <style>
     canvas {
         -moz-user-select: none;
@@ -151,6 +151,16 @@
                                 content: "This is a another test label"
                             },
                             draggable: true
+                        },
+                        {
+                            type: 'box',
+                            xScaleID: 'x-axis-1',
+                            yScaleID: 'y-axis-1',
+                            xMin: 25,
+                            xMax: 45,
+                            yMin: 25,
+                            yMax: 45,
+                            borderWidth: 4
                         }]
                     }
                 }
