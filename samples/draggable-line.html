@@ -128,6 +128,7 @@
                         }]
                     },
                     annotation: {
+                        events: ['click'],
                         annotations: [{
                             type: 'line',
                             mode: 'horizontal',
@@ -138,7 +139,10 @@
                                 enabled: true,
                                 content: "This is a long test label"
                             },
-                            draggable: true
+                            draggable: true,
+                            onClick: function(e) {
+                                console.log(e.type, this);
+                            }
                         },
                         {
                             type: 'line',
@@ -150,7 +154,10 @@
                                 enabled: true,
                                 content: "This is a another test label"
                             },
-                            draggable: true
+                            draggable: true,
+                            onClick: function(e) {
+                                console.log(e.type, this);
+                            }
                         },
                         {
                             type: 'box',

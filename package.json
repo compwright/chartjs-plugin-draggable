@@ -32,6 +32,6 @@
     "d3-selection": "^1.0.2"
   },
   "peerDependencies": {
-    "chartjs-plugin-annotation": "^0.4.0"
+    "chartjs-plugin-annotation": "^0.5.0"
   }
 }

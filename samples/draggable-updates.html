@@ -139,6 +139,7 @@
                     },
                     annotation: {
                         drawTime: "afterDraw",
+                        events: ['click'],
                         annotations: lines
                     }
                 }
@@ -157,7 +158,10 @@
                     enabled: true,
                     content: "Line " + (lines.length + 1)
                 },
-                draggable: true
+                draggable: true,
+                onClick: function(e) {
+                    console.log(e.type, this);
+                }
             });
             window.myScatter.update(0);
         }

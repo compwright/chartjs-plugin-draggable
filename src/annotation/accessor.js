@@ -31,7 +31,7 @@ export class DraggableAnnotationAccessor extends DraggableElementAccessor {
 		return DraggableElementAccessor.getElements(
 			chartInstance,
 			chartInstance.annotations,
-			chartInstance.annotations.map(annotation => annotation.config),
+			chartInstance.annotations.map(annotation => annotation.options),
 			(config) => {
 				switch (config.type) {
 					case 'line':
