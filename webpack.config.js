@@ -2,9 +2,11 @@ var webpack = require('webpack');
 var webpackNodeExternals = require('webpack-node-externals');
 var path = require('path');
 
+var version = require('./package.json').version;
+
 var banner = "chartjs-plugin-draggable.js\n" +
              "http://chartjs.org/\n" +
-             "Version: 0.1.4\n\n" +
+             "Version: " + version + "\n\n" +
              "Copyright 2016 Jonathon Hill\n" +
              "Released under the MIT license\n" +
              "https://github.com/compwright/chartjs-plugin-draggable/blob/master/LICENSE.md";
