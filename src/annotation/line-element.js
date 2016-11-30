@@ -17,13 +17,6 @@ export class DraggableLineAnnotationElement extends DraggableElement {
 		return this.scale.getValueForPixel(this._getPixel(event) - offset);
 	}
 
-	getBox(tolerance) {
-		return {
-			x: [ this.element._view.x1 - tolerance, this.element._view.x2 + tolerance ],
-			y: [ this.element._view.y1 - tolerance, this.element._view.y2 + tolerance ]
-		};
-	}
-
 	onDragStart(event) {
 		this.offset = this._getPixel(event) - this.scale.getPixelForValue(this.config.value);
 	}
