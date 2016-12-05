@@ -1,7 +1,7 @@
 /*!
  * chartjs-plugin-draggable.js
  * http://chartjs.org/
- * Version: 0.1.5
+ * Version: 0.1.6
  * 
  * Copyright 2016 Jonathon Hill
  * Released under the MIT license
@@ -1543,8 +1543,10 @@
 		}, {
 			key: 'getElements',
 			value: function getElements(chartInstance) {
-				return _accessor.DraggableElementAccessor.getElements(chartInstance, chartInstance.annotations, chartInstance.annotations.map(function (annotation) {
-					return annotation.options;
+				return _accessor.DraggableElementAccessor.getElements(chartInstance, Object.keys(chartInstance.annotation.elements).map(function (id) {
+					return chartInstance.annotation.elements[id];
+				}), Object.keys(chartInstance.annotation.elements).map(function (id) {
+					return chartInstance.annotation.elements[id].options;
 				}), function (config) {
 					switch (config.type) {
 						case 'line':
