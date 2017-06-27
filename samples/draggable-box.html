@@ -17,11 +17,10 @@
 
 <body>
     <div style="width:75%">
-        <canvas id="canvas"></canvas>
+        <div>
+            <canvas id="canvas"></canvas>
+        </div>
     </div>
-    <button onclick="addLine()">Add line</button>
-    <button onclick="removeLine()">Remove line</button>
-
     <script>
         var randomScalingFactor = function() {
             return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
@@ -90,15 +89,6 @@
             dataset.pointBorderWidth = 1;
         });
 
-        var lines = [{
-            type: 'line',
-            mode: 'horizontal',
-            scaleID: 'y-axis-1',
-            value: randomScalingFactor(),
-            borderColor: randomColor(0.75),
-            borderWidth: 5
-        }];
-
         window.onload = function() {
             var ctx = document.getElementById("canvas").getContext("2d");
             window.myScatter = Chart.Scatter(ctx, {
@@ -138,38 +128,28 @@
                         }]
                     },
                     annotation: {
-                        drawTime: "afterDraw",
                         events: ['click'],
-                        annotations: lines
+                        annotations: [{
+                            type: 'box',
+                            xScaleID: 'x-axis-1',
+                            yScaleID: 'y-axis-1',
+                            xMin: 25,
+                            xMax: 45,
+                            yMin: 25,
+                            yMax: 45,
+                            borderWidth: 4,
+                            draggable: true,
+                            onClick: function(e) {
+                                console.log(e.type, this);
+                            },
+                            onDrag: function(event) {
+                                console.log(event.subject.config.xMin, event.subject.config.xMax, event.subject.config.yMin, event.subject.config.yMax);
+                            }
+                        }]
                     }
                 }
             });
         };
-
-        function addLine() {
-            lines.push({
-                type: 'line',
-                mode: 'horizontal',
-                scaleID: 'y-axis-1',
-                value: randomScalingFactor(),
-                borderColor: randomColor(0.75),
-                borderWidth: 5,
-                label: {
-                    enabled: true,
-                    content: "Line " + (lines.length + 1)
-                },
-                draggable: true,
-                onClick: function(e) {
-                    console.log(e.type, this);
-                }
-            });
-            window.myScatter.update(0);
-        }
-
-        function removeLine() {
-            lines.pop();
-            window.myScatter.update(0);
-        }
     </script>
 </body>
 

@@ -46,6 +46,22 @@ var options = {
                 onDrag: function(event) {
                     console.log(event.subject.config.value);
                 }
+            },
+            {
+                type: 'box',
+                xScaleID: 'x-axis-0',
+                yScaleID: 'y-axis-0',
+                xMin: 5,
+                xMax: 15,
+                yMax: 10,
+                yMin: 30,
+                borderColor: 'red',
+                borderWidth: 0,
+                backgroundColor: 'red',
+                draggable: true,
+                onDrag: function(event) {
+                    console.log(event.subject.config.xMin, event.subject.config.xMax, event.subject.config.yMin, event.subject.config.yMax);
+                }
             }
         ]
     }
@@ -56,7 +72,7 @@ var options = {
 
 The following features still need to be done:
 
-* Box annotation support
+* Box annotation constraint options for limits and axis of movement
 * Skewed line annotation support
 
 ## Installation

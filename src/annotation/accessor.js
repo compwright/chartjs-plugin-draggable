@@ -2,20 +2,20 @@
 
 import { DraggableElementAccessor } from '../accessor';
 import { DraggableLineAnnotationElement } from './line-element';
-
+import { DraggableBoxAnnotationElement } from './box-element';
 /*
 annotation: {
 	annotations: [
 		{
 			draggable: true,
 			onDragStart: function() {
-				
+
 			},
 			onDrag: function() {
-				
+
 			},
 			onDragEnd: function() {
-				
+
 			}
 		}
 	]
@@ -36,8 +36,8 @@ export class DraggableAnnotationAccessor extends DraggableElementAccessor {
 				switch (config.type) {
 					case 'line':
 						return DraggableLineAnnotationElement;
-
-					// @TODO: implement 'box' support, DraggableBoxAnnotationElement class
+					case 'box':
+						return DraggableBoxAnnotationElement;
 				}
 			}
 		);

@@ -1,7 +1,7 @@
 /*!
  * chartjs-plugin-draggable.js
  * http://chartjs.org/
- * Version: 0.1.6
+ * Version: 0.1.7
  * 
  * Copyright 2016 Jonathon Hill
  * Released under the MIT license
@@ -1501,6 +1501,8 @@
 
 	var _lineElement = __webpack_require__(9);
 
+	var _boxElement = __webpack_require__(10);
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -1513,13 +1515,13 @@
 			{
 				draggable: true,
 				onDragStart: function() {
-					
+
 				},
 				onDrag: function() {
-					
+
 				},
 				onDragEnd: function() {
-					
+
 				}
 			}
 		]
@@ -1551,8 +1553,8 @@
 					switch (config.type) {
 						case 'line':
 							return _lineElement.DraggableLineAnnotationElement;
-
-						// @TODO: implement 'box' support, DraggableBoxAnnotationElement class
+						case 'box':
+							return _boxElement.DraggableBoxAnnotationElement;
 					}
 				});
 			}
@@ -1618,13 +1620,13 @@
 	{
 		draggable: true,
 		onDragStart: function(event) {
-			
+
 		},
 		onDrag: function(event) {
-			
+
 		},
 		onDragEnd: function(event) {
-			
+
 		}
 	}
 	*/
@@ -1738,6 +1740,99 @@
 		}]);
 
 		return DraggableLineAnnotationElement;
+	}(_element.DraggableElement);
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.DraggableBoxAnnotationElement = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _element = __webpack_require__(8);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DraggableBoxAnnotationElement = exports.DraggableBoxAnnotationElement = function (_DraggableElement) {
+		_inherits(DraggableBoxAnnotationElement, _DraggableElement);
+
+		function DraggableBoxAnnotationElement(chartInstance, elementInstance, elementConfig) {
+			_classCallCheck(this, DraggableBoxAnnotationElement);
+
+			var _this = _possibleConstructorReturn(this, (DraggableBoxAnnotationElement.__proto__ || Object.getPrototypeOf(DraggableBoxAnnotationElement)).call(this, chartInstance, elementInstance, elementConfig));
+
+			_this.xScale = _this.chart.scales[elementConfig.xScaleID];
+			_this.yScale = _this.chart.scales[elementConfig.yScaleID];
+			return _this;
+		}
+
+		_createClass(DraggableBoxAnnotationElement, [{
+			key: '_getPixel',
+			value: function _getPixel(event, axis) {
+				return event[axis];
+			}
+		}, {
+			key: '_getXMin',
+			value: function _getXMin(event) {
+				var offset = this.offsetXMin || 0;
+				return this.xScale.getValueForPixel(this._getPixel(event, 'x') - offset);
+			}
+		}, {
+			key: '_getXMax',
+			value: function _getXMax(event) {
+				var offset = this.offsetXMax || 0;
+				return this.xScale.getValueForPixel(this._getPixel(event, 'x') - offset);
+			}
+		}, {
+			key: '_getYMin',
+			value: function _getYMin(event) {
+				var offset = this.offsetYMin || 0;
+				return this.yScale.getValueForPixel(this._getPixel(event, 'y') - offset);
+			}
+		}, {
+			key: '_getYMax',
+			value: function _getYMax(event) {
+				var offset = this.offsetYMax || 0;
+				return this.yScale.getValueForPixel(this._getPixel(event, 'y') - offset);
+			}
+		}, {
+			key: 'onDragStart',
+			value: function onDragStart(event) {
+				this.offsetXMin = this._getPixel(event, 'x') - this.xScale.getPixelForValue(this.config.xMin);
+				this.offsetXMax = this._getPixel(event, 'x') - this.xScale.getPixelForValue(this.config.xMax);
+				this.offsetYMin = this._getPixel(event, 'y') - this.yScale.getPixelForValue(this.config.yMin);
+				this.offsetYMax = this._getPixel(event, 'y') - this.yScale.getPixelForValue(this.config.yMax);
+			}
+		}, {
+			key: 'onDrag',
+			value: function onDrag(event) {
+				this.config.xMin = this._constrainValue(this.xScale, this._getXMin(event));
+				this.config.xMax = this._constrainValue(this.xScale, this._getXMax(event));
+				this.config.yMin = this._constrainValue(this.yScale, this._getYMin(event));
+				this.config.yMax = this._constrainValue(this.yScale, this._getYMax(event));
+				this.chart.update(0);
+			}
+		}, {
+			key: 'onDragEnd',
+			value: function onDragEnd(event) {
+				this.offsetXMin = undefined;
+				this.offsetXMax = undefined;
+				this.offsetYMin = undefined;
+				this.offsetYMax = undefined;
+			}
+		}]);
+
+		return DraggableBoxAnnotationElement;
 	}(_element.DraggableElement);
 
 /***/ }

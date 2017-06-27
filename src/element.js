@@ -4,13 +4,13 @@
 {
 	draggable: true,
 	onDragStart: function(event) {
-		
+
 	},
 	onDrag: function(event) {
-		
+
 	},
 	onDragEnd: function(event) {
-		
+
 	}
 }
 */
