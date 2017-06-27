@@ -64,7 +64,7 @@ The following features still need to be done:
 To install via npm:
 
 ```
-npm install chartjs-plugin-annotation --save
+npm install chartjs-plugin-draggable --save
 ```
 
 Or, download a release archive file from the releases page.
